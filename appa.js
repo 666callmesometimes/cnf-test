@@ -8,7 +8,31 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('dark-mode');
         document.getElementById('darkModeToggle').checked = true;
     }
+
+    document.getElementById('settingsButton').addEventListener('click', function(event) {
+        event.stopPropagation();
+        document.getElementById('dropdownContent').classList.toggle('show');
+    });
+
+    document.getElementById('darkModeToggle').addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', this.checked);
+    });
+
+    document.getElementById('generateLinkButton').addEventListener('click', generateShareableLink);
 });
+
+window.onclick = function(event) {
+    if (!event.target.matches('#settingsButton') && !event.target.matches('#settingsButton *')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+};
 
 function displayFavorites(filter = '') {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -161,19 +185,3 @@ function loadFavoritesFromURL() {
         displayFavorites();
     }
 }
-
-// Dark mode toggle
-const darkModeToggle = document.createElement('label');
-darkModeToggle.classList.add('switch');
-darkModeToggle.innerHTML = `
-    <input type="checkbox" id="darkModeToggle">
-    <span class="slider"></span>
-`;
-document.body.prepend(darkModeToggle);
-
-document.getElementById('darkModeToggle').addEventListener('change', function() {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', this.checked);
-});
-
-document.getElementById('generateLinkButton').addEventListener('click', generateShareableLink);

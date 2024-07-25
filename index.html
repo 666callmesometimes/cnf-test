@@ -8,8 +8,20 @@
     <link rel="shortcut icon" href="https://cdn-icons-png.freepik.com/256/903/903482.png?semt=ais_hybrid" type="image/x-icon">
 </head>
 <br>
-<body>Change theme
+<body>
+    <div class="settings-dropdown">
+        <button id="settingsButton" class="settings-button">
+            <img src="settings-icon.png" alt="Settings" />
+        </button>
+        <div id="dropdownContent" class="dropdown-content">
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+            <span>Dark Mode</span>
+        </div>
     </div>
+    
     <h1>Favorites List <button id="toggleForm" class="toggle-button">+</button></h1>
     <span class="searchbar-container">
         <input type="text" id="searchBar" placeholder="Search by name">
