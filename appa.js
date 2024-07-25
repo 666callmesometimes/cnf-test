@@ -175,10 +175,10 @@ function loadFavoritesFromURL() {
     const encodedFavorites = urlParams.get('favorites');
     if (encodedFavorites) {
         const decodedFavorites = decodeFavorites(encodedFavorites);
-        localStorage.setItem('favorites', JSON.stringify(decodedFavorites));
-        displayFavorites();
+        mergeFavorites(decodedFavorites);
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
     loadFavoritesFromURL();
@@ -193,3 +193,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function mergeFavorites(newFavorites) {
+    const existingFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const mergedFavorites = [...existingFavorites, ...newFavorites];
+    localStorage.setItem('favorites', JSON.stringify(mergedFavorites));
+    displayFavorites();
+}
