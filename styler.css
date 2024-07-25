@@ -1,0 +1,313 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    margin: 20px;
+    background-color: #FAFAFA;
+    transition: background-color 0.3s, color 0.3s;
+}
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="number"],
+input[type="text"],
+#searchBar{
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 12px;
+    border: 1px solid #f6f6f6;
+    font-family: 'Segoe UI';
+    font-size: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="text"]:focus{
+    outline: none;
+    
+}
+
+button[type="submit"] {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 3rem;
+    padding: 1.2rem 1rem;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 500;
+    text-align: center;
+
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 3rem;
+    backdrop-filter: blur(10px);
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+    /*border: 1px solid #ccc;*/
+    padding: 10px;
+    position: relative;
+    background-color: white;
+    transition: background-color 0.3s;
+}
+body.dark-mode li {
+    background-color: #1e1e1e;
+}
+a.item-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+}
+
+img {
+    max-width: 220px;
+    display: block;
+    width: 100%;
+    height: 220px;
+}
+
+.remove-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.toggle-button {
+    color: black;
+    border: none;
+    padding: 2px 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+    width: 3rem;
+    height: 3rem;
+}
+span{
+    margin-left: 1rem;
+}
+p{
+    color: #777;
+    font-size: 12px;
+    font-weight: 500;
+}
+b{
+    color: black;
+    font-size: 1rem;
+}
+h4{
+    font-size: 1.2rem;
+}
+.searchbar-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+#searchBar {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 12px;
+    border: 1px solid #f6f6f6;
+    font-family: 'Segoe UI';
+    font-size: 1rem;
+}
+
+#searchBar:focus {
+    outline: none;
+}
+.edit-button {
+    position: absolute;
+    top: 10px;
+    right: 70px;
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+.edit-button,
+.remove-button{
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 500;
+}
+
+#generateLinkButton {
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 3rem;
+    padding: 1.2rem 1rem;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 850px) {
+    h4{
+        width: 50vw; /* Maksymalna szerokość elementu */
+        white-space: nowrap; /* Nie łamie linii */
+        overflow: hidden; /* Ukrywa nadmiarowy tekst */
+        text-overflow: ellipsis; /* Dodaje trzykropek */
+    }
+}
+@media only screen and (max-width: 600px) {
+    h4{
+        width: 30vw; /* Maksymalna szerokość elementu */
+        white-space: nowrap; /* Nie łamie linii */
+        overflow: hidden; /* Ukrywa nadmiarowy tekst */
+        text-overflow: ellipsis; /* Dodaje trzykropek */
+    }
+}
+@media only screen and (max-width: 425px) {
+    a.item-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    img {
+        max-width: 290px;
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+    h4{
+        font-size: 24px;
+        width: 80vw;
+    }
+    button[type="submit"]{
+        width: 100%;
+    }
+  }
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+    width: 100%;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="url"],
+body.dark-mode input[type="number"],
+body.dark-mode input[type="text"],
+body.dark-mode #searchBar {
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+body.dark-mode button[type="submit"] {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .edit-button,
+body.dark-mode .remove-button {
+    background-color: rgba(255, 255, 255, 0.5);
+    color: black;
+}
+body.dark-mode b{
+    color: #eaeaea;
+}
+body.dark-mode .toggle-button,
+body.dark-mode .remove-button,
+body.dark-mode .edit-button
+{
+    background-color: rgba(50, 50, 50, 0.6);
+    color: #fafafa;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+  
+::-webkit-scrollbar-thumb {
+    background: rgba(84, 84, 84, 0.2);
+    border-radius: 5px;
+}
+
