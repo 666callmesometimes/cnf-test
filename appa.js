@@ -1,102 +1,67 @@
-document.getElementById('toggleForm').addEventListener('click', function() {
-    const form = document.getElementById('productForm');
-    const toggleButton = document.getElementById('toggleForm');
-    if (form.style.display === 'none') {
-        form.style.display = 'block';
-        toggleButton.textContent = '-';
-    } else {
-        form.style.display = 'none';
-        toggleButton.textContent = '+';
-    }
-});
-
-document.getElementById('productForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const name = document.getElementById('name').value;
-    const link = document.getElementById('link').value;
-    const image = document.getElementById('image').value;
-    const price = document.getElementById('price').value;
-    const size = document.getElementById('size').checked ? document.getElementById('sizeText').value : '';
-    const batch = document.getElementById('batch').checked ? document.getElementById('batchText').value : '';
-
-    const product = { name, link, image, price, size, batch };
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-    const editIndex = document.getElementById('productForm').getAttribute('data-edit-index');
-    if (editIndex) {
-        favorites[editIndex] = product;
-        document.getElementById('productForm').removeAttribute('data-edit-index');
-    } else {
-        favorites.push(product);
-    }
-
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    displayFavorites();
-    this.reset();
+document.addEventListener('DOMContentLoaded', function() {
+    loadFavoritesFromURL();
     document.getElementById('sizeText').style.display = 'none';
     document.getElementById('batchText').style.display = 'none';
-    document.getElementById('toggleForm').textContent = '+';
-    form.style.display = 'none';
+
+    const darkMode = JSON.parse(localStorage.getItem('darkMode'));
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').checked = true;
+    }
 });
 
-document.getElementById('size').addEventListener('change', function() {
-    document.getElementById('sizeText').style.display = this.checked ? 'block' : 'none';
-});
-
-document.getElementById('batch').addEventListener('change', function() {
-    document.getElementById('batchText').style.display = this.checked ? 'block' : 'none';
-});
-
-document.getElementById('searchBar').addEventListener('input', function() {
-    displayFavorites(this.value);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    displayFavorites();
-});
-
-function displayFavorites(searchQuery = '') {
+function displayFavorites(filter = '') {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const filteredFavorites = favorites.filter(favorite =>
+        favorite.name.toLowerCase().includes(filter.toLowerCase())
+    );
     const favoritesList = document.getElementById('favoritesList');
     favoritesList.innerHTML = '';
 
-    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const filteredFavorites = favorites.filter(product => 
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    filteredFavorites.forEach((favorite, index) => {
+        const listItem = document.createElement('li');
+        const productLink = document.createElement('a');
+        productLink.classList.add('item-link');
+        productLink.href = favorite.link;
+        productLink.target = '_blank';
 
-    filteredFavorites.forEach((product, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <a href="${product.link}" target="_blank" class="item-link">
-                <img src="${product.image}" alt="${product.name}">
-                <span>
-                <h4>${product.name}</h4>
-                <p>Price: <b>¥${product.price}</b></p>
-                ${product.size ? `<p>Size: <b>${product.size}</b></p>` : ''}
-                ${product.batch ? `<p>Batch:<b> ${product.batch}</b></p>` : ''}
-                </span>
-            </a>
-            <button class="edit-button" data-index="${index}">Edit</button>
-            <button class="remove-button" data-index="${index}">Remove</button>
-        `;
-        favoritesList.appendChild(li);
-    });
+        const productImage = document.createElement('img');
+        productImage.src = favorite.image;
+        productImage.alt = favorite.name;
 
-    document.querySelectorAll('.remove-button').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.stopPropagation();
-            const index = this.getAttribute('data-index');
-            removeFavorite(index);
-        });
-    });
+        const productDetails = document.createElement('div');
+        const productName = document.createElement('h4');
+        productName.textContent = favorite.name;
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `Price: ${favorite.price}`;
+        const productSize = favorite.size ? document.createElement('p') : null;
+        if (productSize) productSize.textContent = `Size: ${favorite.size}`;
+        const productBatch = favorite.batch ? document.createElement('p') : null;
+        if (productBatch) productBatch.textContent = `Batch: ${favorite.batch}`;
 
-    document.querySelectorAll('.edit-button').forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.stopPropagation();
-            const index = this.getAttribute('data-index');
-            editFavorite(index);
-        });
+        productDetails.appendChild(productName);
+        productDetails.appendChild(productPrice);
+        if (productSize) productDetails.appendChild(productSize);
+        if (productBatch) productDetails.appendChild(productBatch);
+
+        productLink.appendChild(productImage);
+        productLink.appendChild(productDetails);
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'Remove';
+        removeButton.classList.add('remove-button');
+        removeButton.addEventListener('click', () => removeFavorite(index));
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-button');
+        editButton.addEventListener('click', () => editFavorite(index));
+
+        listItem.appendChild(productLink);
+        listItem.appendChild(removeButton);
+        listItem.appendChild(editButton);
+
+        favoritesList.appendChild(listItem);
     });
 }
 
@@ -109,50 +74,27 @@ function removeFavorite(index) {
 
 function editFavorite(index) {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const product = favorites[index];
+    const favorite = favorites[index];
 
-    document.getElementById('name').value = product.name;
-    document.getElementById('link').value = product.link;
-    document.getElementById('image').value = product.image;
-    document.getElementById('price').value = product.price;
-    document.getElementById('size').checked = product.size ? true : false;
-    document.getElementById('sizeText').value = product.size;
-    document.getElementById('batch').checked = product.batch ? true : false;
-    document.getElementById('batchText').value = product.batch;
-
-    document.getElementById('sizeText').style.display = product.size ? 'block' : 'none';
-    document.getElementById('batchText').style.display = product.batch ? 'block' : 'none';
+    document.getElementById('name').value = favorite.name;
+    document.getElementById('link').value = favorite.link;
+    document.getElementById('image').value = favorite.image;
+    document.getElementById('price').value = favorite.price;
+    document.getElementById('size').checked = !!favorite.size;
+    document.getElementById('batch').checked = !!favorite.batch;
+    if (favorite.size) {
+        document.getElementById('sizeText').value = favorite.size;
+        document.getElementById('sizeText').style.display = 'block';
+    }
+    if (favorite.batch) {
+        document.getElementById('batchText').value = favorite.batch;
+        document.getElementById('batchText').style.display = 'block';
+    }
 
     document.getElementById('productForm').setAttribute('data-edit-index', index);
-    document.getElementById('productForm').style.display = 'block';
     document.getElementById('toggleForm').textContent = '-';
+    document.getElementById('productForm').style.display = 'block';
 }
-
-
-/*darkmode*/
-const darkModeToggle = document.createElement('label');
-darkModeToggle.classList.add('switch');
-darkModeToggle.innerHTML = `
-    <input type="checkbox" id="darkModeToggle">
-    <span class="slider"></span>
-`;
-document.body.prepend(darkModeToggle);
-
-document.getElementById('darkModeToggle').addEventListener('change', function() {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('darkMode', this.checked);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const darkMode = JSON.parse(localStorage.getItem('darkMode'));
-    if (darkMode) {
-        document.body.classList.add('dark-mode');
-        document.getElementById('darkModeToggle').checked = true;
-    }
-});
-
-document.getElementById('generateLinkButton').addEventListener('click', generateShareableLink);
-
 
 function encodeFavorites(favorites) {
     return btoa(JSON.stringify(favorites));
@@ -166,36 +108,72 @@ function generateShareableLink() {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     const encodedFavorites = encodeFavorites(favorites);
     const baseUrl = window.location.origin;
-    const shareableLink = `${baseUrl}?favorites=${encodedFavorites}`;
+    const shareableLink = `${baseUrl}?view=${encodedFavorites}`;
     prompt('Share this link with others:', shareableLink);
+}
+
+function displayFavoritesFromURL(favorites) {
+    const favoritesList = document.getElementById('favoritesList');
+    favoritesList.innerHTML = '';
+
+    favorites.forEach((favorite) => {
+        const listItem = document.createElement('li');
+        const productLink = document.createElement('a');
+        productLink.classList.add('item-link');
+        productLink.href = favorite.link;
+        productLink.target = '_blank';
+
+        const productImage = document.createElement('img');
+        productImage.src = favorite.image;
+        productImage.alt = favorite.name;
+
+        const productDetails = document.createElement('div');
+        const productName = document.createElement('h4');
+        productName.textContent = favorite.name;
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `Price: ${favorite.price}`;
+        const productSize = favorite.size ? document.createElement('p') : null;
+        if (productSize) productSize.textContent = `Size: ${favorite.size}`;
+        const productBatch = favorite.batch ? document.createElement('p') : null;
+        if (productBatch) productBatch.textContent = `Batch: ${favorite.batch}`;
+
+        productDetails.appendChild(productName);
+        productDetails.appendChild(productPrice);
+        if (productSize) productDetails.appendChild(productSize);
+        if (productBatch) productDetails.appendChild(productBatch);
+
+        productLink.appendChild(productImage);
+        productLink.appendChild(productDetails);
+
+        listItem.appendChild(productLink);
+
+        favoritesList.appendChild(listItem);
+    });
 }
 
 function loadFavoritesFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const encodedFavorites = urlParams.get('favorites');
+    const encodedFavorites = urlParams.get('view');
     if (encodedFavorites) {
         const decodedFavorites = decodeFavorites(encodedFavorites);
-        mergeFavorites(decodedFavorites);
+        displayFavoritesFromURL(decodedFavorites);
+    } else {
+        displayFavorites();
     }
 }
 
+// Dark mode toggle
+const darkModeToggle = document.createElement('label');
+darkModeToggle.classList.add('switch');
+darkModeToggle.innerHTML = `
+    <input type="checkbox" id="darkModeToggle">
+    <span class="slider"></span>
+`;
+document.body.prepend(darkModeToggle);
 
-document.addEventListener('DOMContentLoaded', function() {
-    loadFavoritesFromURL();
-    displayFavorites();
-    document.getElementById('sizeText').style.display = 'none';
-    document.getElementById('batchText').style.display = 'none';
-
-    const darkMode = JSON.parse(localStorage.getItem('darkMode'));
-    if (darkMode) {
-        document.body.classList.add('dark-mode');
-        document.getElementById('darkModeToggle').checked = true;
-    }
+document.getElementById('darkModeToggle').addEventListener('change', function() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('darkMode', this.checked);
 });
 
-function mergeFavorites(newFavorites) {
-    const existingFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const mergedFavorites = [...existingFavorites, ...newFavorites];
-    localStorage.setItem('favorites', JSON.stringify(mergedFavorites));
-    displayFavorites();
-}
+document.getElementById('generateLinkButton').addEventListener('click', generateShareableLink);
